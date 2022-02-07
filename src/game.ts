@@ -1,6 +1,8 @@
 import { v4 as uuid } from "uuid"
 import { useEffect, useState } from "react"
-import { Game, NewGameForm } from "./game.model"
+import { Game, ID, NewGameForm } from "./game.model"
+
+const GAMES = "games"
 
 function getGames(): Game[] {
   const gamesAsString = localStorage.getItem(GAMES)
@@ -10,7 +12,7 @@ function getGames(): Game[] {
 export function useGames() {
   const [games, setGames] = useState<Game[]>(getGames)
 
-  const removeGame = (idToRemove: string) => {
+  const removeGame = (idToRemove: ID) => {
     const updatedGamesList = games.filter((g) => g.id !== idToRemove)
     localStorage.setItem(GAMES, JSON.stringify(updatedGamesList))
     setGames(updatedGamesList)
@@ -40,4 +42,22 @@ export async function createGame({
   return newGame
 }
 
-const GAMES = "games"
+export function useGame(gameId?: ID) {
+  const [game, setGame] = useState<Game>()
+  useEffect(() => {
+    const games = getGames()
+    setGame(games.find((g) => g.id === gameId))
+  }, [gameId])
+
+  return game
+}
+
+export function updateGame(updatedGame: Game) {
+  const games = getGames()
+  for (let game of games) {
+    if (game.id === updatedGame.id) {
+      Object.assign(game, updatedGame)
+      break
+    }
+  }
+}

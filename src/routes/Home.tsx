@@ -1,21 +1,24 @@
 import * as React from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useGames } from "../game"
 import { Game } from "../game.model"
 
 const Home = () => {
   const { games, removeGame } = useGames()
+  const navigate = useNavigate()
   return (
     <div className="App">
       {games.length === 0
         ? "No game yet"
         : games.map((game: Game) => (
             <div key={game.id}>
-              <div>{new Date(game.createdAt).toLocaleDateString()}</div>
-              <div>
-                {game.gameName}
-                <button onClick={() => removeGame(game.id)}>🗑</button>
-              </div>
+              <a href={`/play/${game.id}`}>
+                <div>{new Date(game.createdAt).toLocaleDateString()}</div>
+                <div>
+                  {game.gameName}
+                  <button onClick={() => removeGame(game.id)}>🗑</button>
+                </div>
+              </a>
               {game.players.map((player) => (
                 <div key={player.playerName}>🧑🏻‍🦰{player.playerName}</div>
               ))}
