@@ -1,30 +1,26 @@
 import { v4 as uuid } from "uuid"
 import { useEffect, useState } from "react"
+import { Game, NewGameForm } from "./game.model"
 
-export type NewGameForm = {
-  gameName: string
-  playersNames: string[]
-}
-
-export type PlayerScore = {
-  playerName: string
-  scores: number[]
-}
-
-export type Game = {
-  gameName: string
-  createdAt: Date
-  id: string
-  players: PlayerScore[]
+function getGames(): Game[] {
+  const gamesAsString = localStorage.getItem(GAMES)
+  return !gamesAsString ? [] : JSON.parse(gamesAsString)
 }
 
 export function useGames() {
-  const [games, setGames] = useState<Game[]>([])
-  useEffect(() => {
-    const gamesAsString = localStorage.getItem(GAMES)
-    setGames(!gamesAsString ? [] : JSON.parse(gamesAsString))
-  }, [])
-  return games
+  const [games, setGames] = useState<Game[]>(getGames)
+
+  const removeGame = (idToRemove: string) => {
+    const updatedGamesList = games.filter((g) => g.id !== idToRemove)
+    localStorage.setItem(GAMES, JSON.stringify(updatedGamesList))
+    setGames(updatedGamesList)
+  }
+
+  return { games, removeGame }
+}
+
+export function useRemoveGame() {
+  return
 }
 
 export async function createGame({
@@ -35,10 +31,11 @@ export async function createGame({
     id: uuid(),
     createdAt: new Date(),
     gameName,
-    players: playersNames.map((name) => ({ playerName: name, scores: [] })),
+    players: playersNames
+      .filter(Boolean)
+      .map((name) => ({ playerName: name, scores: [] })),
   }
-  const gamesAsString = await localStorage.getItem(GAMES)
-  const games = !gamesAsString ? [] : JSON.parse(gamesAsString)
+  const games = getGames()
   await localStorage.setItem(GAMES, JSON.stringify([newGame, ...games]))
   return newGame
 }
