@@ -31,22 +31,22 @@ const NewGame = () => {
   } = useForm({
     defaultValues: { gameName: "", playersNames: [] as FieldValue[] },
   })
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: "playersNames", // unique name for your Field Array
-    }
-  )
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "playersNames", // unique name for your Field Array
+  })
+
+
 
   const onSubmit = (formValues: any) => {
     console.log({
       ...formValues,
       playersNames: formValues.playersNames.map((p: FieldValue) => p.value),
     })
+
   }
 
   const reorderPlayers = (result: any) => {
-    console.log("reorder", result)
     // dropped outside the list
     if (!result.destination) {
       return
@@ -57,7 +57,6 @@ const NewGame = () => {
       result.source.index,
       result.destination.index
     )
-    console.log("items", items)
     setValue("playersNames", items)
   }
 
@@ -86,7 +85,9 @@ const NewGame = () => {
                       {...provided.dragHandleProps}
                       tabIndex={-1}
                     >
-                      <input {...register(`playersNames.${index}.value`)} />Ⅲ
+                      <input {...register(`playersNames.${index}.value`)} />
+                      <span>ⅢⅢⅢⅢ</span>
+                      <button onClick={() => remove(index)}>╳</button>
                     </div>
                   )}
                 </Draggable>
