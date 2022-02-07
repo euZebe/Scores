@@ -7,6 +7,8 @@ import {
   DraggableProvided,
   DroppableProvided,
 } from "react-beautiful-dnd"
+import { createGame } from "../game"
+import { useNavigate } from "react-router-dom"
 
 type FieldValue = {
   value: string
@@ -36,18 +38,18 @@ const NewGame = () => {
     name: "playersNames", // unique name for your Field Array
   })
 
+  let navigate = useNavigate()
 
-
-  const onSubmit = (formValues: any) => {
-    console.log({
+  const onSubmit = async (formValues: any) => {
+    console.log("submitting")
+    await createGame({
       ...formValues,
       playersNames: formValues.playersNames.map((p: FieldValue) => p.value),
     })
-
+    navigate("/")
   }
 
   const reorderPlayers = (result: any) => {
-    // dropped outside the list
     if (!result.destination) {
       return
     }
@@ -70,7 +72,9 @@ const NewGame = () => {
       </div>
       <div>
         <label htmlFor="playersNames">Players</label>
-        <button onClick={() => append({ value: "" })}>Add player</button>
+        <button type="button" onClick={() => append({ value: "" })}>
+          Add player
+        </button>
       </div>
       <DragDropContext onDragEnd={reorderPlayers}>
         <Droppable droppableId="droppable">
@@ -97,9 +101,7 @@ const NewGame = () => {
           )}
         </Droppable>
       </DragDropContext>
-      <button type="submit" style={{ display: "block" }}>
-        Submit
-      </button>
+      <button style={{ display: "block" }}>Submit</button>
     </form>
   )
 }
