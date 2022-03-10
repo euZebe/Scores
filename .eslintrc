@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    "testing-library"
+  ],
+  "rules": {
+    "testing-library/no-dom-import": "off"
+  }
+}

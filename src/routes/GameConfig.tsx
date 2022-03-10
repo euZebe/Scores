@@ -42,7 +42,7 @@ const GameConfig = () => {
   } = useForm({
     defaultValues: {
       gameName: "",
-      playersNames: [] as FieldValue[],
+      playersNames: [{ value: "" }] as FieldValue[],
     },
   })
 
@@ -98,7 +98,11 @@ const GameConfig = () => {
       <h1>Please fill new game props</h1>
       <div>
         <label htmlFor="gameName">Game name</label>
-        <input type="text" {...register("gameName", { required: true })} />
+        <input
+          id="gameName"
+          type="text"
+          {...register("gameName", { required: true })}
+        />
         {errors.gameName && <span>This field is required</span>}
       </div>
       <div>
@@ -125,7 +129,13 @@ const GameConfig = () => {
                         {...provided.dragHandleProps}
                         tabIndex={-1}
                       >
-                        <input {...register(`playersNames.${index}.value`)} />
+                        <label htmlFor={`playersNames.${index}.value`}>
+                          Player {index}
+                        </label>
+                        <input
+                          id={`playersNames.${index}.value`}
+                          {...register(`playersNames.${index}.value`)}
+                        />
                         <span>ⅢⅢⅢⅢ</span>
                         <button onClick={() => remove(index)}>╳</button>
                       </div>
