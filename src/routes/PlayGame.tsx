@@ -14,6 +14,11 @@ const PlayGame = () => {
   return game ? (
     <div>
       <h1>{game.gameName}</h1>
+      <li>
+        {game.players.map((player) => (
+          <ul>{player.playerName}</ul>
+        ))}
+      </li>
     </div>
   ) : (
     <div>loading...</div>

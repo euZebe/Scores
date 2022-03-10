@@ -83,11 +83,7 @@ const GameConfig = () => {
       return
     }
 
-    const items = reorder(
-      getValues().playersNames,
-      result.source.index,
-      result.destination.index
-    )
+    const items = reorder(getValues().playersNames, result.source.index, result.destination.index)
     setValue("playersNames", items)
   }
 
@@ -98,11 +94,7 @@ const GameConfig = () => {
       <h1>Please fill new game props</h1>
       <div>
         <label htmlFor="gameName">Game name</label>
-        <input
-          id="gameName"
-          type="text"
-          {...register("gameName", { required: true })}
-        />
+        <input id="gameName" type="text" {...register("gameName", { required: true })} />
         {errors.gameName && <span>This field is required</span>}
       </div>
       <div>
@@ -117,11 +109,7 @@ const GameConfig = () => {
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {fields.map((field, index) => {
                 return (
-                  <Draggable
-                    key={field.id}
-                    draggableId={field.id}
-                    index={index}
-                  >
+                  <Draggable key={field.id} draggableId={field.id} index={index}>
                     {(provided: DraggableProvided) => (
                       <div
                         ref={provided.innerRef}
@@ -129,9 +117,7 @@ const GameConfig = () => {
                         {...provided.dragHandleProps}
                         tabIndex={-1}
                       >
-                        <label htmlFor={`playersNames.${index}.value`}>
-                          Player {index}
-                        </label>
+                        <label htmlFor={`playersNames.${index}.value`}>Player {index + 1}</label>
                         <input
                           id={`playersNames.${index}.value`}
                           {...register(`playersNames.${index}.value`)}

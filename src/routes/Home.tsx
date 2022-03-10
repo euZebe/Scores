@@ -11,13 +11,16 @@ const Home = () => {
       {games.length === 0
         ? "No game yet"
         : games.map((game: Game) => (
-            <div key={game.id}>
+            <div key={game.id} role="button">
               <a href={`/play/${game.id}`}>
                 <div>{new Date(game.createdAt).toLocaleDateString()}</div>
                 {game.gameName}
               </a>
               <div>
-                <button onClick={() => navigate(`/edit-game/${game.id}`)}>
+                <button
+                  onClick={() => navigate(`/edit-game/${game.id}`)}
+                  aria-label={`edit game ${game.gameName}`}
+                >
                   ✏️
                 </button>
                 <button onClick={() => removeGame(game.id)}>🗑</button>
