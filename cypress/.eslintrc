@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "testing-library/await-async-query": "off",
+    "testing-library/prefer-screen-queries": "off",
+    "testing-library/no-debugging-utils": "warn",
+    "testing-library/no-dom-import": "off"
+  }
+}
