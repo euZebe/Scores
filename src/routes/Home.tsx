@@ -14,11 +14,14 @@ const Home = () => {
             <div key={game.id}>
               <a href={`/play/${game.id}`}>
                 <div>{new Date(game.createdAt).toLocaleDateString()}</div>
-                <div>
-                  {game.gameName}
-                  <button onClick={() => removeGame(game.id)}>🗑</button>
-                </div>
+                {game.gameName}
               </a>
+              <div>
+                <button onClick={() => navigate(`/edit-game/${game.id}`)}>
+                  ✏️
+                </button>
+                <button onClick={() => removeGame(game.id)}>🗑</button>
+              </div>
               {game.players.map((player) => (
                 <div key={player.playerName}>🧑🏻‍🦰{player.playerName}</div>
               ))}

@@ -1,12 +1,16 @@
 import { v4 as uuid } from "uuid"
 import { useEffect, useState } from "react"
-import { Game, ID, NewGameForm } from "./game.model"
+import { EditGameForm, Game, ID, NewGameForm } from "./game.model"
 
 const GAMES = "games"
 
 function getGames(): Game[] {
   const gamesAsString = localStorage.getItem(GAMES)
   return !gamesAsString ? [] : JSON.parse(gamesAsString)
+}
+
+export function getGame(gameId: ID): Game | undefined {
+  return getGames().find((game) => game.id === gameId)
 }
 
 export function useGames() {
@@ -52,12 +56,18 @@ export function useGame(gameId?: ID) {
   return game
 }
 
-export function updateGame(updatedGame: Game) {
+export function updateGame(updatedGame: EditGameForm): void {
   const games = getGames()
   for (let game of games) {
     if (game.id === updatedGame.id) {
-      Object.assign(game, updatedGame)
+      Object.assign(game, {
+        gameName: updatedGame.gameName,
+        players: updatedGame.playersNames
+          .filter(Boolean)
+          .map((name) => ({ playerName: name, scores: [] })),
+      })
       break
     }
   }
+  localStorage.setItem(GAMES, JSON.stringify(games))
 }

@@ -7,8 +7,10 @@ import {
   DraggableProvided,
   DroppableProvided,
 } from "react-beautiful-dnd"
-import { createGame } from "../game"
-import { useNavigate } from "react-router-dom"
+import { createGame, getGame, updateGame } from "../game"
+import { useNavigate, useParams } from "react-router-dom"
+import { ID } from "../game.model"
+import { useEffect } from "react"
 
 type FieldValue = {
   value: string
@@ -22,30 +24,57 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result
 }
 
-const NewGame = () => {
+type GameConfigProps = {
+  gameId: ID
+}
+
+const GameConfig = () => {
+  const { gameId } = useParams<GameConfigProps>()
+
   const {
     control,
     register,
     handleSubmit,
     getValues,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { gameName: "", playersNames: [] as FieldValue[] },
+    defaultValues: {
+      gameName: "",
+      playersNames: [] as FieldValue[],
+    },
   })
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "playersNames", // unique name for your Field Array
   })
 
+  useEffect(() => {
+    if (gameId) {
+      const game = getGame(gameId)
+      if (game) {
+        reset({
+          gameName: game.gameName,
+        })
+        append(game.players.map((p) => ({ value: p.playerName })))
+      }
+    }
+  }, [append, gameId, reset])
+
   let navigate = useNavigate()
 
   const onSubmit = async (formValues: any) => {
-    console.log("submitting")
-    await createGame({
+    // console.log("submitting", formValues)
+    const submitFn = gameId ? updateGame : createGame
+
+    await submitFn({
       ...formValues,
+      id: gameId,
       playersNames: formValues.playersNames.map((p: FieldValue) => p.value),
     })
+
     navigate("/")
   }
 
@@ -61,6 +90,8 @@ const NewGame = () => {
     )
     setValue("playersNames", items)
   }
+
+  console.log("fields", fields)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,22 +111,28 @@ const NewGame = () => {
         <Droppable droppableId="droppable">
           {(provided: DroppableProvided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {fields.map((field, index) => (
-                <Draggable key={field.id} draggableId={field.id} index={index}>
-                  {(provided: DraggableProvided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      tabIndex={-1}
-                    >
-                      <input {...register(`playersNames.${index}.value`)} />
-                      <span>ⅢⅢⅢⅢ</span>
-                      <button onClick={() => remove(index)}>╳</button>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+              {fields.map((field, index) => {
+                return (
+                  <Draggable
+                    key={field.id}
+                    draggableId={field.id}
+                    index={index}
+                  >
+                    {(provided: DraggableProvided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        tabIndex={-1}
+                      >
+                        <input {...register(`playersNames.${index}.value`)} />
+                        <span>ⅢⅢⅢⅢ</span>
+                        <button onClick={() => remove(index)}>╳</button>
+                      </div>
+                    )}
+                  </Draggable>
+                )
+              })}
               {provided.placeholder}
             </div>
           )}
@@ -106,4 +143,4 @@ const NewGame = () => {
   )
 }
 
-export default NewGame
+export default GameConfig

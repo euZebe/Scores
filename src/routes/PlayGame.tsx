@@ -1,6 +1,6 @@
 import * as React from "react"
-import { useGame, useGames } from "../game"
-import { Game, ID } from "../game.model"
+import { useGame } from "../game"
+import { ID } from "../game.model"
 import { useParams } from "react-router-dom"
 
 type PlayGameProps = {

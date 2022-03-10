@@ -3,6 +3,8 @@ export type NewGameForm = {
   playersNames: string[]
 }
 
+export type EditGameForm = NewGameForm & { id: ID }
+
 export type PlayerScore = {
   playerName: string
   scores: number[]
