@@ -14,11 +14,11 @@ const PlayGame = () => {
   return game ? (
     <div>
       <h1>{game.gameName}</h1>
-      <li>
+      <div className="flex justify-stretch">
         {game.players.map((player) => (
-          <ul>{player.playerName}</ul>
+          <div>{player.playerName}</div>
         ))}
-      </li>
+      </div>
     </div>
   ) : (
     <div>loading...</div>
